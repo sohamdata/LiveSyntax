@@ -1,12 +1,18 @@
-interface JoinRoomProps { }
+import Link from "next/link";
+
+interface JoinRoomProps { };
 
 const JoinRoom = (props: JoinRoomProps) => {
+    const joinHandler = (e: any) => {
+        e.preventDefault();
+    };
+
     return (
         <>
-            <div className='w-full sm:w-[450px] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex justify-center items-center'>
-                <div className='rounded-lg shadow relative w-full bg-teal-500'>
-                    <div className='w-full h-full flex  justify-center'>
-                        <form className="space-y-4 px-4 p-4">
+            <div className='w-[450px] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex justify-center items-center'>
+                <div className='rounded-md shadow relative w-full bg-burgundy border-2 border-another-red'>
+                    <div className='w-full h-full flex justify-center'>
+                        <form className="space-y-4 px-4 p-4 w-[400px]">
                             <h1 className="text-center text-2xl text-white font-medium">LiveSyntax</h1>
                             <div>
                                 <label htmlFor="email" className="my-2 block text-white">Room ID</label>
@@ -20,15 +26,17 @@ const JoinRoom = (props: JoinRoomProps) => {
                                     className="mb-4 p-1.5 rounded-md outline-none border-5 w-full text-black text-sm"
                                 />
                             </div>
-                            <button type="submit" className="py-2 w-full rounded-md font-medium text-white bg-blue-600 hover:bg-blue-800 hover:text-brand-orange transition duration-300">
+                            <button type="submit" onClick={joinHandler}
+                                className="py-2 w-full rounded-md font-medium text-white bg-blue-700 hover:bg-blue-800 hover:text-brand-orange transition duration-300"
+                            >
                                 Join Room
                             </button>
                             <div>
                                 <p className="text-center text-white">
                                     Don't have a room?
-                                    <a className="ml-2 text-blue-600 cursor-pointer hover:underline">
-                                        New Room
-                                    </a>
+                                    <Link href='/' className="ml-2 text-blue-600 cursor-pointer hover:underline">
+                                        Go Back
+                                    </Link>
                                 </p>
                             </div>
                         </form>
