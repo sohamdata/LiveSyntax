@@ -1,12 +1,14 @@
-import Client from "@/components/Client";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import Client from "@/components/Client";
+import TextEditor from "@/components/TextEditor";
 
 interface RoomIDProps { };
 
 const Editor = (props: RoomIDProps) => {
     const router = useRouter();
     const { roomid, username } = router.query;
+
     const [clients, setClients] = useState([
         { socketId: 1, name: 'soham' },
         { socketId: 2, name: 'anothersoham' },
@@ -44,7 +46,8 @@ const Editor = (props: RoomIDProps) => {
                 </div>
             </div>
             <div className='p-2 w-[80%] bg-cement'>
-                <div>code editor</div>
+                <div>editor</div>
+                <TextEditor />
             </div>
         </div>
     )
