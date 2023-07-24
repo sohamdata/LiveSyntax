@@ -18,7 +18,7 @@ const Editor = (props: RoomIDProps) => {
     return (
         <>
             <div className='flex h-screen'>
-                <div className='p-2 flex flex-col justify-between w-[300px] bg-burgundy'>
+                <div className='p-2 flex flex-col justify-between w-[20%] bg-burgundy'>
                     <div className='flex flex-col items-center'>
                         <div className='text-white text-center text-2xl font-medium'>LiveSyntax</div>
                         <div className='text-white text-center text-lg font-medium'>Room ID: {roomid}</div>
@@ -29,11 +29,11 @@ const Editor = (props: RoomIDProps) => {
                         <button className='p-2 rounded-md font-medium bg-red-500 hover:bg-red-800 hover:text-brand-orange transition duration-300' onClick={leaveHandler}>Leave Room</button>
                     </div>
                 </div>
+                <div className='p-2 w-[80%] bg-cement'>
+                    <div>code editor</div>
+                </div>
             </div>
 
-            <div className='p-2 w-full bg-cement'>
-                <div>code editor</div>
-            </div>
         </>
     )
 
