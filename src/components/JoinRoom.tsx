@@ -58,7 +58,7 @@ const JoinRoom = (props: JoinRoomProps) => {
                                 />
                             </div>
                             <button type="submit" onClick={joinHandler}
-                                className="py-2 w-full rounded-md font-medium text-white bg-blue-700 hover:bg-blue-800 hover:text-brand-orange transition duration-300"
+                                className="py-2 w-full rounded-md font-medium text-white bg-blue-700 hover:bg-blue-800 transition duration-300"
                             >
                                 Join Room
                             </button>

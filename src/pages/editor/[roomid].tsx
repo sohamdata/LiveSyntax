@@ -4,16 +4,39 @@ interface RoomIDProps { };
 
 const Editor = (props: RoomIDProps) => {
     const router = useRouter();
-    console.log(router.query);
     const { roomid, username } = router.query;
+
+    const copyHandler = () => {
+        navigator.clipboard.writeText(roomid as string);
+        return;
+    };
+
+    const leaveHandler = () => {
+        router.push('/');
+    };
 
     return (
         <>
-            <h1>Code Editor here</h1>
-            <p>Room ID: {roomid}</p>
-            <p>Username: {username}</p>
+            <div className='flex h-screen'>
+                <div className='p-2 flex flex-col justify-between w-[300px] bg-burgundy'>
+                    <div className='flex flex-col items-center'>
+                        <div className='text-white text-center text-2xl font-medium'>LiveSyntax</div>
+                        <div className='text-white text-center text-lg font-medium'>Room ID: {roomid}</div>
+                        <div className='text-white text-center text-lg font-medium'>Username: {username}</div>
+                    </div>
+                    <div className='mb-4 flex items-center justify-center space-x-5'>
+                        <button className='p-2 rounded-md font-medium bg-green-500 hover:bg-green-800 hover:text-brand-orange transition duration-300' onClick={copyHandler}>Copy Room ID</button>
+                        <button className='p-2 rounded-md font-medium bg-red-500 hover:bg-red-800 hover:text-brand-orange transition duration-300' onClick={leaveHandler}>Leave Room</button>
+                    </div>
+                </div>
+            </div>
+
+            <div className='p-2 w-full bg-cement'>
+                <div>code editor</div>
+            </div>
         </>
     )
+
 }
 
 export async function getStaticPaths() {
