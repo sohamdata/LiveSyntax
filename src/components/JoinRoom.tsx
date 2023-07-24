@@ -14,6 +14,12 @@ const JoinRoom = (props: JoinRoomProps) => {
         setRoomId(nanoid());
         setIsGenerated(true);
     };
+
+    const joinAnotherRoom = () => {
+        setRoomId('');
+        setIsGenerated(false);
+    };
+
     const joinHandler = (e: any) => {
         e.preventDefault();
         if (!roomId || !username) {
@@ -23,7 +29,8 @@ const JoinRoom = (props: JoinRoomProps) => {
         router.push({
             pathname: `/editor/${roomId}`,
             query: { username: username, }
-        });
+        }, `/editor/${roomId}`,
+        );
     };
 
     return (
@@ -56,12 +63,19 @@ const JoinRoom = (props: JoinRoomProps) => {
                                 Join Room
                             </button>
                             <div>
-                                <p className="text-center text-white">
+                                {!isGenerated && <p className="text-center text-white">
                                     Don't have a room?
                                     <span className="ml-2 text-blue-600 cursor-pointer hover:underline" onClick={generateRoomId}>
                                         Create one
                                     </span>
+                                </p>}
+                                {isGenerated && <p className="text-center text-white">
+                                    join another room?
+                                    <span className="ml-2 text-gray-400 cursor-pointer hover:underline" onClick={joinAnotherRoom}>
+                                        enter a room id
+                                    </span>
                                 </p>
+                                }
                             </div>
                         </form>
                     </div>
