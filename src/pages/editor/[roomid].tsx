@@ -45,8 +45,7 @@ const Editor = (props: RoomIDProps) => {
                     <button className='p-2 rounded-sm bg-red-500 hover:bg-red-800 transition duration-300' onClick={leaveHandler}>Leave Room</button>
                 </div>
             </div>
-            <div className='p-2 w-[80%] bg-cement'>
-                <div>editor</div>
+            <div className='w-[80%] bg-cement'>
                 <TextEditor />
             </div>
         </div>

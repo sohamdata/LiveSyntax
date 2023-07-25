@@ -1,13 +1,15 @@
 import CodeMirror from '@uiw/react-codemirror';
 import { tokyoNightStorm } from "@uiw/codemirror-theme-tokyo-night-storm";
+import { javascript } from '@codemirror/lang-javascript';
 
 const TextEditor = () => {
     return (
         <CodeMirror
             value={"universal universe"}
             style={{ color: 'black' }}
+            extensions={[javascript()]}
             theme={tokyoNightStorm}
-            height="90vh"
+            height="100vh"
         />
     )
 }
