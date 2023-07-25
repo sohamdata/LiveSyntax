@@ -1,5 +1,5 @@
 import JoinRoom from "@/components/JoinRoom";
-import useHasMounted from "@/utils/hooks/useHasMounted";
+import useHasMounted from "@/hooks/useHasMounted";
 
 export default function Home() {
   const hasMounted = useHasMounted();
