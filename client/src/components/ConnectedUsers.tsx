@@ -1,13 +1,13 @@
 import Avatar from 'react-avatar';
 
-interface ClientProps {
+interface ConnectedUsersProps {
     client: {
         socketId: number;
         name: string;
     };
 };
 
-const Client = ({ client }: ClientProps) => {
+const ConnectedUsers = ({ client }: ConnectedUsersProps) => {
     return (
         <div className='flex flex-col items-center'>
             <Avatar name={client.name} size="50" round={true} />
@@ -16,4 +16,4 @@ const Client = ({ client }: ClientProps) => {
     )
 }
 
-export default Client;
+export default ConnectedUsers;

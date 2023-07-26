@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import Client from "@/components/Client";
+import ConnectedUsers from "@/components/ConnectedUsers";
 import TextEditor from "@/components/TextEditor";
 import { socket } from "@/libs/socket";
 
@@ -8,6 +8,7 @@ interface RoomIDProps { };
 
 const Editor = (props: RoomIDProps) => {
     const router = useRouter();
+    console.log(router.query);
     const { roomid, username } = router.query;
     const socketRef = useRef<any>(null);
 
@@ -18,7 +19,6 @@ const Editor = (props: RoomIDProps) => {
         };
         innit();
     }, [])
-
 
     const [clients, setClients] = useState([
         { socketId: 1, name: 'soham' },
@@ -41,12 +41,13 @@ const Editor = (props: RoomIDProps) => {
                     <div>
                         <div className='text-white text-center text-2xl font-medium'>LiveSyntax</div>
                         <div className='text-white text-center text-lg font-medium'>Room ID: {roomid}</div>
+                        <div className='text-white text-center text-lg font-medium'>username: {username}</div>
                     </div>
                     <div className='mt-4'>
                         <div className='text-white text-center text-lg font-medium'>Connected Users</div>
                         <div className='mt-2 flex flex-col space-y-2'>
                             {clients.map((client) => (
-                                <Client key={client.socketId} client={client} />
+                                <ConnectedUsers key={client.socketId} client={client} />
                             ))}
                         </div>
                     </div>
@@ -75,9 +76,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(context: any) {
     const { roomid } = context.params;
     return {
-        props: {
-            roomid
-        }
+        props: { roomid }
     }
 }
 

@@ -28,7 +28,7 @@ const JoinRoom = (props: JoinRoomProps) => {
         }
         router.push({
             pathname: `/editor/${roomId}`,
-            query: { username: username, }
+            query: { username: JSON.stringify(username) }
         }, `/editor/${roomId}`,
         );
     };
