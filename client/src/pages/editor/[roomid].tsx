@@ -1,13 +1,24 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Client from "@/components/Client";
 import TextEditor from "@/components/TextEditor";
+import { socket } from "@/libs/socket";
 
 interface RoomIDProps { };
 
 const Editor = (props: RoomIDProps) => {
     const router = useRouter();
     const { roomid, username } = router.query;
+    const socketRef = useRef<any>(null);
+
+    useEffect(() => {
+        const innit = async () => {
+            socketRef.current = await socket();
+            socketRef.current.emit('join');
+        };
+        innit();
+    }, [])
+
 
     const [clients, setClients] = useState([
         { socketId: 1, name: 'soham' },
