@@ -26,11 +26,11 @@ const JoinRoom = (props: JoinRoomProps) => {
             alert('Please fill in the required fields');
             return;
         }
+        sessionStorage.setItem('username', username);
+
         router.push({
             pathname: `/editor/${roomId}`,
-            query: { username: username }
-        }, `/editor/${roomId}`,
-        );
+        });
     };
 
     return (

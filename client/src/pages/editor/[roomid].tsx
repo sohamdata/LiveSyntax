@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import ConnectedUsers from "@/components/ConnectedUsers";
 import TextEditor from "@/components/TextEditor";
 import { socket } from "@/libs/socket";
-// import { GetServerSideProps, NextPageContext } from "next";
 
 interface RoomIDProps { };
 
@@ -14,9 +13,9 @@ const Editor = (props: RoomIDProps) => {
     const [username, setUsername] = useState('');
 
     useEffect(() => {
-        if (router.isReady) {
-            console.log(router.query);
-            setUsername(router.query.username as string)
+        const sessionusername = sessionStorage.getItem('username');
+        if (sessionusername) {
+            setUsername(sessionusername);
         }
     }, [router.isReady]);
 
@@ -25,10 +24,10 @@ const Editor = (props: RoomIDProps) => {
     useEffect(() => {
         const innit = async () => {
             socketRef.current = await socket();
-            socketRef.current.emit('join');
+            socketRef.current.emit('join', { roomid, username });
         };
         innit();
-    }, [])
+    }, [roomid])
 
     const [clients, setClients] = useState([
         { socketId: 1, name: 'soham' },
@@ -89,7 +88,6 @@ const Editor = (props: RoomIDProps) => {
 //         props: { roomid }
 //     }
 // }
-
 
 export default Editor;
 
