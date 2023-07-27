@@ -3,13 +3,23 @@ import { useEffect, useRef, useState } from "react";
 import ConnectedUsers from "@/components/ConnectedUsers";
 import TextEditor from "@/components/TextEditor";
 import { socket } from "@/libs/socket";
+// import { GetServerSideProps, NextPageContext } from "next";
 
 interface RoomIDProps { };
 
 const Editor = (props: RoomIDProps) => {
     const router = useRouter();
     console.log(router.query);
-    const { roomid, username } = router.query;
+    const { roomid } = router.query;
+    const [username, setUsername] = useState('');
+
+    useEffect(() => {
+        if (router.isReady) {
+            console.log(router.query);
+            setUsername(router.query.username as string)
+        }
+    }, [router.isReady]);
+
     const socketRef = useRef<any>(null);
 
     useEffect(() => {
@@ -64,20 +74,31 @@ const Editor = (props: RoomIDProps) => {
     )
 }
 
-export async function getStaticPaths() {
-    return {
-        paths: [
-            { params: { roomid: 'test' } }
-        ],
-        fallback: true
-    }
-}
+// export async function getStaticPaths() {
+//     return {
+//         paths: [
+//             { params: { roomid: 'test' } }
+//         ],
+//         fallback: true
+//     }
+// }
 
-export async function getStaticProps(context: any) {
-    const { roomid } = context.params;
-    return {
-        props: { roomid }
-    }
-}
+// export async function getStaticProps(context: any) {
+//     const { roomid } = context.params;
+//     return {
+//         props: { roomid }
+//     }
+// }
+
 
 export default Editor;
+
+// Editor.getInitialProps = async (context: any) => {
+//     const { query } = context;
+//     return { query };
+// }
+
+// export const getServerSideProps: GetServerSideProps = async (context: NextPageContext) => {
+//     const { query } = context;
+//     return { props: { query } };
+// }
