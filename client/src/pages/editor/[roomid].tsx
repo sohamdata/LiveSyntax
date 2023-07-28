@@ -23,22 +23,24 @@ const Editor = (props: RoomIDProps) => {
 
     const socketRef = useRef<any>(null);
 
+    function handleErrors(err: any) {
+        console.log(err);
+        router.push('/').then(() => router.reload());
+        return;
+    }
+
     useEffect(() => {
         const innit = async () => {
+
             socketRef.current = await socket();
             socketRef.current.on('connect_error', (err: any) => handleErrors(err));
             socketRef.current.on('connect_failed', (err: any) => handleErrors(err));
-
-            function handleErrors(err: any) {
-                console.log(err);
-                router.push('/');
-            }
 
             socketRef.current.emit('join', { roomid, username });
         };
 
         innit();
-    }, [])
+    }, []);
 
     const [clients, setClients] = useState([
         { socketId: 1, name: 'soham' },
