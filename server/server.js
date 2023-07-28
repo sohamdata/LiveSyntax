@@ -11,4 +11,4 @@ io.on('connection', (socket) => {
     console.log(socket.id);
 });
 
-server.listen(PORT, () => { console.log(`listening on port ${PORT}`); });
+server.listen(PORT, () => { console.log(`> listening on port ${PORT}`); });

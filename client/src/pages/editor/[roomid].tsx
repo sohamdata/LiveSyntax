@@ -1,3 +1,5 @@
+'use client'
+
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import ConnectedUsers from "@/components/ConnectedUsers";
@@ -8,35 +10,35 @@ interface RoomIDProps { };
 
 const Editor = (props: RoomIDProps) => {
     const router = useRouter();
-    console.log(router.query);
+    // console.log(router.query);
     const { roomid } = router.query;
     const [username, setUsername] = useState('');
 
-    // SESSION STORAGE
     useEffect(() => {
         const sessionusername = sessionStorage.getItem('username');
         if (sessionusername) {
             setUsername(sessionusername);
         }
-    }, [router.isReady]);
-
-    // QUERY PARAMS
-    // useEffect(() => {
-    //     if (router.query.username) {
-    //         console.log(username);
-    //         setUsername(router.query.username as string);
-    //     }
-    // }, [router.query.username, router]);
+    }, []);
 
     const socketRef = useRef<any>(null);
 
     useEffect(() => {
         const innit = async () => {
             socketRef.current = await socket();
+            socketRef.current.on('connect_error', (err: any) => handleErrors(err));
+            socketRef.current.on('connect_failed', (err: any) => handleErrors(err));
+
+            function handleErrors(err: any) {
+                console.log(err);
+                router.push('/');
+            }
+
             socketRef.current.emit('join', { roomid, username });
         };
+
         innit();
-    }, [roomid])
+    }, [])
 
     const [clients, setClients] = useState([
         { socketId: 1, name: 'soham' },
