@@ -13,15 +13,12 @@
     "@codemirror/lang-javascript": "^6.1.9",
     "@uiw/codemirror-theme-tokyo-night-storm": "^4.21.8",
     "@uiw/react-codemirror": "^4.21.8",
-    "localforage": "^1.10.0",
-    "match-sorter": "^6.3.1",
     "nanoid": "^4.0.2",
     "react": "^18.2.0",
     "react-avatar": "^5.0.3",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.2",
-    "socket.io-client": "^4.7.1",
-    "sort-by": "^1.2.0"
+    "socket.io-client": "^4.7.1"
   },
   "devDependencies": {
     "@types/node": "^20.4.5",
