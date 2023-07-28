@@ -8,5 +8,5 @@ export const socket = async () => {
         transports: ['websocket'],
     };
 
-    return io(process.env.NEXT_PUBLIC_BACKEND_URL as string, options);
+    return io(import.meta.env.VITE_BACKEND_URL as string, options);
 };

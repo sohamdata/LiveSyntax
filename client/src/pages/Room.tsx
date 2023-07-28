@@ -1,32 +1,22 @@
-'use client'
-
-import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import ConnectedUsers from "@/components/ConnectedUsers";
-import TextEditor from "@/components/TextEditor";
-import { socket } from "@/libs/socket";
+import { useLocation, useNavigate, useParams, } from 'react-router-dom';
+import ConnectedUsers from "../components/ConnectedUsers";
+import TextEditor from "../components/TextEditor";
+import { socket } from "../libs/socket";
 
-interface RoomIDProps { };
+interface RoomProps { };
 
-const Editor = (props: RoomIDProps) => {
-    const router = useRouter();
-    // console.log(router.query);
-    const { roomid } = router.query;
-    const [username, setUsername] = useState('');
-
-    useEffect(() => {
-        const sessionusername = sessionStorage.getItem('username');
-        if (sessionusername) {
-            setUsername(sessionusername);
-        }
-    }, []);
+const Room = (props: RoomProps) => {
+    const location = useLocation();
+    const reactNavigator = useNavigate();
+    const { roomid } = useParams();
+    const username = location.state?.username
 
     const socketRef = useRef<any>(null);
 
     function handleErrors(err: any) {
         console.log(err);
-        router.push('/').then(() => router.reload());
-        return;
+        reactNavigator('/');
     }
 
     useEffect(() => {
@@ -53,8 +43,7 @@ const Editor = (props: RoomIDProps) => {
     };
 
     const leaveHandler = () => {
-        sessionStorage.removeItem('username');
-        router.push('/');
+        reactNavigator('/');
     };
 
     return (
@@ -87,30 +76,4 @@ const Editor = (props: RoomIDProps) => {
     )
 }
 
-// export async function getStaticPaths() {
-//     return {
-//         paths: [
-//             { params: { roomid: 'test' } }
-//         ],
-//         fallback: true
-//     }
-// }
-
-// export async function getStaticProps(context: any) {
-//     const { roomid } = context.params;
-//     return {
-//         props: { roomid }
-//     }
-// }
-
-export default Editor;
-
-// Editor.getInitialProps = async (context: any) => {
-//     const { query } = context;
-//     return { query };
-// }
-
-// export const getServerSideProps: GetServerSideProps = async (context: NextPageContext) => {
-//     const { query } = context;
-//     return { props: { query } };
-// }
+export default Room;
