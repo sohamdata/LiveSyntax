@@ -4,15 +4,18 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
+
+const userSocketMap = {};
 
 io.on('connection', (socket) => {
-    console.log('a user CONNECTED');
-    console.log(socket.id);
+    console.log('a user CONNECTED', socket.id);
+
+    socket.on('join', ({ roomid, username }) => {
+        userSocketMap[socket.id] = username;
+        socket.join(roomid);
+        console.log('userSocketMap', userSocketMap);
+    });
 });
 
-app.get('/', (req, res) => {
-    res.send('<p> testing, like the 4th of July </p>');
-});
-
-server.listen(PORT, () => { console.log(`listening on port ${PORT} like the 4th of July`); });
+server.listen(PORT, () => { console.log(`> listening on port ${PORT}`); });

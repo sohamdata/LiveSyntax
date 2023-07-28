@@ -1,34 +1,36 @@
-import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import ConnectedUsers from "@/components/ConnectedUsers";
-import TextEditor from "@/components/TextEditor";
-import { socket } from "@/libs/socket";
-// import { GetServerSideProps, NextPageContext } from "next";
+import { useLocation, useNavigate, useParams, } from 'react-router-dom';
+import ConnectedUsers from "../components/ConnectedUsers";
+import TextEditor from "../components/TextEditor";
+import { socket } from "../libs/socket";
 
-interface RoomIDProps { };
+interface RoomProps { };
 
-const Editor = (props: RoomIDProps) => {
-    const router = useRouter();
-    console.log(router.query);
-    const { roomid } = router.query;
-    const [username, setUsername] = useState('');
-
-    useEffect(() => {
-        if (router.isReady) {
-            console.log(router.query);
-            setUsername(router.query.username as string)
-        }
-    }, [router.isReady]);
+const Room = (props: RoomProps) => {
+    const location = useLocation();
+    const reactNavigator = useNavigate();
+    const { roomid } = useParams();
+    const username = location.state?.username
 
     const socketRef = useRef<any>(null);
 
+    function handleErrors(err: any) {
+        console.log(err);
+        reactNavigator('/');
+    }
+
     useEffect(() => {
         const innit = async () => {
+
             socketRef.current = await socket();
-            socketRef.current.emit('join');
+            socketRef.current.on('connect_error', (err: any) => handleErrors(err));
+            socketRef.current.on('connect_failed', (err: any) => handleErrors(err));
+
+            socketRef.current.emit('join', { roomid, username });
         };
+
         innit();
-    }, [])
+    }, []);
 
     const [clients, setClients] = useState([
         { socketId: 1, name: 'soham' },
@@ -41,7 +43,7 @@ const Editor = (props: RoomIDProps) => {
     };
 
     const leaveHandler = () => {
-        router.push('/');
+        reactNavigator('/');
     };
 
     return (
@@ -74,31 +76,4 @@ const Editor = (props: RoomIDProps) => {
     )
 }
 
-// export async function getStaticPaths() {
-//     return {
-//         paths: [
-//             { params: { roomid: 'test' } }
-//         ],
-//         fallback: true
-//     }
-// }
-
-// export async function getStaticProps(context: any) {
-//     const { roomid } = context.params;
-//     return {
-//         props: { roomid }
-//     }
-// }
-
-
-export default Editor;
-
-// Editor.getInitialProps = async (context: any) => {
-//     const { query } = context;
-//     return { query };
-// }
-
-// export const getServerSideProps: GetServerSideProps = async (context: NextPageContext) => {
-//     const { query } = context;
-//     return { props: { query } };
-// }
+export default Room;
