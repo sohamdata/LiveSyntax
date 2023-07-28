@@ -11,8 +11,4 @@ io.on('connection', (socket) => {
     console.log(socket.id);
 });
 
-app.get('/', (req, res) => {
-    res.send('<p> testing, like the 4th of July </p>');
-});
-
-server.listen(PORT, () => { console.log(`listening on port ${PORT} like the 4th of July`); });
+server.listen(PORT, () => { console.log(`listening on port ${PORT}`); });

@@ -12,12 +12,21 @@ const Editor = (props: RoomIDProps) => {
     const { roomid } = router.query;
     const [username, setUsername] = useState('');
 
+    // SESSION STORAGE
     useEffect(() => {
         const sessionusername = sessionStorage.getItem('username');
         if (sessionusername) {
             setUsername(sessionusername);
         }
     }, [router.isReady]);
+
+    // QUERY PARAMS
+    // useEffect(() => {
+    //     if (router.query.username) {
+    //         console.log(username);
+    //         setUsername(router.query.username as string);
+    //     }
+    // }, [router.query.username, router]);
 
     const socketRef = useRef<any>(null);
 
@@ -40,6 +49,7 @@ const Editor = (props: RoomIDProps) => {
     };
 
     const leaveHandler = () => {
+        sessionStorage.removeItem('username');
         router.push('/');
     };
 
