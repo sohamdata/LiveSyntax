@@ -1,22 +1,31 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate, useParams, } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ConnectedUsers from "../components/ConnectedUsers";
 import TextEditor from "../components/TextEditor";
 import { socket } from "../libs/socket";
 
 interface RoomProps { };
 
+interface Client {
+    username: string;
+    socketId: string;
+};
+
 const Room = (props: RoomProps) => {
     const location = useLocation();
-    const reactNavigator = useNavigate();
-    const { roomid } = useParams();
-    const username = location.state?.username
+    const navigate = useNavigate();
+
+    const { roomId } = useParams();
+    const username = location.state.username;
+    if (!username) navigate('/');
 
     const socketRef = useRef<any>(null);
 
+    const [clients, setClients] = useState<Client[]>([]);
+
     function handleErrors(err: any) {
         console.log(err);
-        reactNavigator('/');
+        navigate('/');
     }
 
     useEffect(() => {
@@ -26,24 +35,29 @@ const Room = (props: RoomProps) => {
             socketRef.current.on('connect_error', (err: any) => handleErrors(err));
             socketRef.current.on('connect_failed', (err: any) => handleErrors(err));
 
-            socketRef.current.emit('join', { roomid, username });
+            socketRef.current.emit('join-room', { roomId, username });
+
+            // listen for someone joining the room
+            socketRef.current.on('room-joined', ({ clients, username: joinedUser, socketId }: any) => {
+                if (joinedUser !== username) {
+                    alert(`${joinedUser} has joined the room`);
+                }
+                setClients(clients);
+            })
         };
 
         innit();
     }, []);
 
-    const [clients, setClients] = useState([
-        { socketId: 1, name: 'soham' },
-        { socketId: 2, name: 'anothersoham' },
-    ]);
+
 
     const copyHandler = () => {
-        navigator.clipboard.writeText(roomid as string);
+        navigator.clipboard.writeText(roomId as string);
         return;
     };
 
     const leaveHandler = () => {
-        reactNavigator('/');
+        navigate('/');
     };
 
     return (
@@ -52,7 +66,7 @@ const Room = (props: RoomProps) => {
                 <div className='flex flex-col items-center'>
                     <div>
                         <div className='text-white text-center text-2xl font-medium'>LiveSyntax</div>
-                        <div className='text-white text-center text-lg font-medium'>Room ID: {roomid}</div>
+                        <div className='text-white text-center text-lg font-medium'>Room ID: {roomId}</div>
                         <div className='text-white text-center text-lg font-medium'>username: {username}</div>
                     </div>
                     <div className='mt-4'>

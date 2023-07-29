@@ -7,6 +7,6 @@ export const socket = async () => {
         timeout: 10000,
         transports: ['websocket'],
     };
-
+    // process.env.REACT_APP_BACKEND_URL
     return io(import.meta.env.VITE_BACKEND_URL as string, options);
 };
