@@ -33,7 +33,21 @@ io.on('connection', (socket) => {
         clients.forEach(({ socketId }) => {
             io.to(socketId).emit('room-joined', { clients, username, socketId: socket.id });
         })
+    });
 
+    socket.on('leave-room', ({ roomId, username }) => {
+        socket.to(roomId).emit('user-disconnected', { username, socketId: socket.id });
+        delete userSocketMap[socket.id];
+        socket.leave(roomId);
+    });
+
+    socket.on('disconnecting', () => {
+        const rooms = [...socket.rooms];
+        rooms.forEach((roomId) => {
+            socket.in(roomId).emit('user-disconnected', { username: userSocketMap[socket.id], socketId: socket.id });
+        });
+        delete userSocketMap[socket.id];
+        socket.leave();
     });
 });
 

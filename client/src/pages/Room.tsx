@@ -44,12 +44,21 @@ const Room = (props: RoomProps) => {
                 }
                 setClients(clients);
             })
+
+            // listen for someone leaving the room
+            socketRef.current.on('user-disconnected', ({ username, socketId }: any) => {
+                setClients((prevClients) => prevClients.filter((client) => client.socketId !== socketId));
+                alert(`${username} has left the room`);
+            });
         };
 
         innit();
+
+        return () => {
+            socketRef.current.off('user-disconnected');
+            socketRef.current.disconnect();
+        };
     }, []);
-
-
 
     const copyHandler = () => {
         navigator.clipboard.writeText(roomId as string);
@@ -57,6 +66,8 @@ const Room = (props: RoomProps) => {
     };
 
     const leaveHandler = () => {
+        socketRef.current.emit('leave-room', { roomId, username });
+        socketRef.current.disconnect();
         navigate('/');
     };
 
