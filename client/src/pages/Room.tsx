@@ -58,7 +58,7 @@ const Room = (props: RoomProps) => {
             socketRef.current.off('user-disconnected');
             socketRef.current.disconnect();
         };
-    }, []);
+    }, [socketRef]);
 
     const copyHandler = () => {
         navigator.clipboard.writeText(roomId as string);
@@ -95,7 +95,7 @@ const Room = (props: RoomProps) => {
                 </div>
             </div>
             <div className='w-[80%] bg-cement'>
-                <TextEditor />
+                <TextEditor socketRef={socketRef} />
             </div>
         </div>
     )
