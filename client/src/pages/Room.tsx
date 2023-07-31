@@ -29,7 +29,7 @@ const Room = (props: RoomProps) => {
     }
 
     useEffect(() => {
-        const innit = async () => {
+        const enterRoom = async () => {
 
             socketRef.current = await socket();
             socketRef.current.on('connect_error', (err: any) => handleErrors(err));
@@ -52,7 +52,7 @@ const Room = (props: RoomProps) => {
             });
         };
 
-        innit();
+        enterRoom();
 
         return () => {
             socketRef.current.off('user-disconnected');

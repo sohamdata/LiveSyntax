@@ -20,13 +20,8 @@ function getRoomClients(roomId) {
     });
 };
 
-function getSocketRoom(socket) {
-    const rooms = [...socket.rooms];
-    return rooms.find((room) => room !== socket.id);
-};
-
 io.on('connection', (socket) => {
-    console.log('a user CONNECTED to socketId', socket.id);
+    console.log('a user CONNECTED with socketId', socket.id);
 
     socket.on('join-room', ({ roomId, username }) => {
         userSocketMap[socket.id] = username;
@@ -56,8 +51,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('code-change', (updatedCode) => {
-        const room = getSocketRoom(socket);
-        socket.to(room).emit('code-change', updatedCode);
+        const rooms = [...socket.rooms];
+        rooms.forEach((roomId) => {
+            socket.in(roomId).emit('code-change', updatedCode);
+        });
     });
 });
 

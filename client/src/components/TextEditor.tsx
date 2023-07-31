@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { tokyoNightStorm } from '@uiw/codemirror-theme-tokyo-night-storm';
 import { javascript } from '@codemirror/lang-javascript';
@@ -18,7 +18,7 @@ const TextEditor = ({ socketRef }: any) => {
         return () => {
             socketRef.current.off('code-change');
         };
-    }, [socketRef]);
+    }, [code]);
 
     const handleCodeChange = (value: string) => {
         setCode(value);
