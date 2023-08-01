@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ConnectedUsers from "../components/ConnectedUsers";
@@ -24,6 +24,7 @@ const Room = (props: RoomProps) => {
 
     const [clients, setClients] = useState<Client[]>([]);
     const [code, setCode] = useState('');
+    const codeRef = useRef<any>(null);
 
     function handleErrors(err: any) {
         console.log(err);
@@ -43,7 +44,7 @@ const Room = (props: RoomProps) => {
                 alert(`${joinedUser} has joined the room`);
             }
             setClients(clients);
-            socket.emit("sync-code", { socketId, code });
+            socket.emit("sync-code", { socketId, code: codeRef.current });
         })
 
         // listen for someone leaving the room
@@ -78,6 +79,7 @@ const Room = (props: RoomProps) => {
 
     function handleCodeChange(value: string) {
         setCode(value);
+        codeRef.current = value;
         socket.emit('code-change', value);
     };
 
