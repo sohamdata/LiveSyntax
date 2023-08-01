@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on("sync-code", ({ socketId, code }) => {
-        io.to(socketId).emit("code-change", { code });
+        io.to(socketId).emit("code-change", code);
     });
 });
 
