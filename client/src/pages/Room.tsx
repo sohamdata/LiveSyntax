@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ConnectedUsers from "../components/ConnectedUsers";
-// import TextEditor from "../components/TextEditor";
 import { socket } from "../libs/socket";
 import CodeMirror from '@uiw/react-codemirror';
 import { tokyoNightStorm } from '@uiw/codemirror-theme-tokyo-night-storm';
@@ -22,8 +21,6 @@ const Room = (props: RoomProps) => {
     const username = location.state.username;
     if (!username) navigate('/');
 
-    // const socketRef = useRef<any>(null);
-
     const [clients, setClients] = useState<Client[]>([]);
     const [code, setCode] = useState('');
 
@@ -31,17 +28,17 @@ const Room = (props: RoomProps) => {
         console.log(err);
         navigate('/');
     }
+
     function handleCodeChange(value: string) {
         setCode(value);
         socket.emit('code-change', value);
     };
 
     useEffect(() => {
-
-        // socket = await socket();
         socket.on('connect_error', (err: any) => handleErrors(err));
         socket.on('connect_failed', (err: any) => handleErrors(err));
 
+        // join the room when the component mounts
         socket.emit('join-room', { roomId, username });
 
         // listen for someone joining the room
@@ -58,13 +55,15 @@ const Room = (props: RoomProps) => {
             alert(`${username} has left the room`);
         });
 
+        // listen for code changes
         socket.on('code-change', (updatedCode: string) => {
             setCode(updatedCode);
         });
 
-
         return () => {
             socket.off('user-disconnected');
+            socket.off('room-joined');
+            socket.off('code-change');
             socket.disconnect();
         };
     }, [roomId]);
@@ -103,6 +102,7 @@ const Room = (props: RoomProps) => {
                     <button className='p-2 rounded-sm bg-red-500 hover:bg-red-800 transition duration-300' onClick={leaveHandler}>Leave Room</button>
                 </div>
             </div>
+
             <div className='w-[80%] bg-cement'>
                 <CodeMirror
                     value={code}

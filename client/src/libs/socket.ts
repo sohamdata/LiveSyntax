@@ -1,7 +1,6 @@
 import { io } from 'socket.io-client';
 
 const options = {
-    'force new connection': true,
     reconnectionAttempts: 5,
     timeout: 10000,
     transports: ['websocket'],
