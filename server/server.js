@@ -56,6 +56,10 @@ io.on('connection', (socket) => {
             socket.in(roomId).emit('code-change', updatedCode);
         });
     });
+
+    socket.on("sync-code", ({ socketId, code }) => {
+        io.to(socketId).emit("code-change", code);
+    });
 });
 
 server.listen(PORT, () => { console.log(`> listening on port ${PORT}`); });

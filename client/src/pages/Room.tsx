@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ConnectedUsers from "../components/ConnectedUsers";
-import TextEditor from "../components/TextEditor";
 import { socket } from "../libs/socket";
+import CodeMirror from '@uiw/react-codemirror';
+import { tokyoNightStorm } from '@uiw/codemirror-theme-tokyo-night-storm';
+import { javascript } from '@codemirror/lang-javascript';
 
 interface RoomProps { };
 
@@ -19,9 +22,9 @@ const Room = (props: RoomProps) => {
     const username = location.state.username;
     if (!username) navigate('/');
 
-    const socketRef = useRef<any>(null);
-
     const [clients, setClients] = useState<Client[]>([]);
+    const [code, setCode] = useState('');
+    const codeRef = useRef<any>(null);
 
     function handleErrors(err: any) {
         console.log(err);
@@ -29,75 +32,99 @@ const Room = (props: RoomProps) => {
     }
 
     useEffect(() => {
-        const enterRoom = async () => {
+        socket.on('connect_error', (err: any) => handleErrors(err));
+        socket.on('connect_failed', (err: any) => handleErrors(err));
 
-            socketRef.current = await socket();
-            socketRef.current.on('connect_error', (err: any) => handleErrors(err));
-            socketRef.current.on('connect_failed', (err: any) => handleErrors(err));
+        // join the room when the component mounts
+        socket.emit('join-room', { roomId, username });
 
-            socketRef.current.emit('join-room', { roomId, username });
+        // listen for someone joining the room
+        socket.on('room-joined', ({ clients, username: joinedUser, socketId }: { clients: Client[], username: string, socketId: string }) => {
+            if (joinedUser !== username) {
+                alert(`${joinedUser} has joined the room`);
+            }
+            setClients(clients);
+            socket.emit("sync-code", { socketId, code: codeRef.current });
+        })
 
-            // listen for someone joining the room
-            socketRef.current.on('room-joined', ({ clients, username: joinedUser, socketId }: any) => {
-                if (joinedUser !== username) {
-                    alert(`${joinedUser} has joined the room`);
-                }
-                setClients(clients);
-            })
+        // listen for someone leaving the room
+        socket.on('user-disconnected', ({ username, socketId }: { username: string, socketId: string }) => {
+            setClients((prevClients) => prevClients.filter((client) => client.socketId !== socketId));
+            alert(`${username} has left the room`);
+        });
 
-            // listen for someone leaving the room
-            socketRef.current.on('user-disconnected', ({ username, socketId }: any) => {
-                setClients((prevClients) => prevClients.filter((client) => client.socketId !== socketId));
-                alert(`${username} has left the room`);
-            });
-        };
-
-        enterRoom();
+        // listen for code changes
+        socket.on('code-change', (updatedCode: string) => {
+            if (updatedCode !== null) setCode(updatedCode);
+        });
 
         return () => {
-            socketRef.current.off('user-disconnected');
-            socketRef.current.disconnect();
+            socket.off('user-disconnected');
+            socket.off('room-joined');
+            socket.off('code-change');
+            socket.disconnect();
         };
-    }, [socketRef]);
+    }, [roomId]);
 
-    const copyHandler = () => {
+    function copyHandler() {
         navigator.clipboard.writeText(roomId as string);
         return;
     };
 
-    const leaveHandler = () => {
-        socketRef.current.emit('leave-room', { roomId, username });
-        socketRef.current.disconnect();
+    function leaveHandler() {
+        socket.emit('leave-room', { roomId, username });
+        socket.disconnect();
         navigate('/');
     };
 
+    function handleCodeChange(value: string) {
+        setCode(value);
+        codeRef.current = value;
+        socket.emit('code-change', value);
+    };
+
     return (
-        <div className='flex h-screen'>
-            <div className='p-2 flex flex-col justify-between w-[20%] bg-burgundy'>
-                <div className='flex flex-col items-center'>
-                    <div>
-                        <div className='text-white text-center text-2xl font-medium'>LiveSyntax</div>
-                        <div className='text-white text-center text-lg font-medium'>Room ID: {roomId}</div>
-                        <div className='text-white text-center text-lg font-medium'>username: {username}</div>
-                    </div>
-                    <div className='mt-4'>
-                        <div className='text-white text-center text-lg font-medium'>Connected Users</div>
-                        <div className='mt-2 flex flex-col space-y-2'>
-                            {clients.map((client) => (
-                                <ConnectedUsers key={client.socketId} client={client} />
-                            ))}
+        <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>{username} | LiveSyntax</title>
+                <meta name="description" content="LiveSyntax Room" />
+            </Helmet>
+            <div className='flex h-screen'>
+                <div className='flex flex-col justify-between w-[20%] bg-burgundy'>
+                    <div className='flex flex-col items-center'>
+                        <div className='mb-5 p-5 w-full text-white text-center text-2xl font-medium'>LiveSyntax</div>
+                        <div>
+                            <div className='text-white text-center text-lg font-medium'>Room ID: <pre>{roomId}</pre></div>
+                            <div className='text-white text-center text-lg font-medium'>username: {username}</div>
+                        </div>
+                        <div className='mt-4'>
+                            <div className='text-white text-center text-lg font-medium'>Connected Users</div>
+                            <div className='mt-2 flex flex-col space-y-2'>
+                                {clients.map((client) => (
+                                    <ConnectedUsers key={client.socketId} client={client} />
+                                ))}
+                            </div>
                         </div>
                     </div>
+                    <div className='p-2 mb-5 flex flex-col items-center justify-center gap-2'>
+                        <button className='p-2 w-full rounded-sm bg-green-500 hover:bg-green-600 transition duration-300' onClick={copyHandler}>Copy Room ID</button>
+                        <button className='p-2 w-full rounded-sm bg-red-500 hover:bg-red-700 transition duration-300' onClick={leaveHandler}>Leave Room</button>
+                    </div>
                 </div>
-                <div className='mb-2 flex items-center justify-center space-x-5'>
-                    <button className='p-2 rounded-sm bg-green-500 hover:bg-green-800 transition duration-300' onClick={copyHandler}>Copy Room ID</button>
-                    <button className='p-2 rounded-sm bg-red-500 hover:bg-red-800 transition duration-300' onClick={leaveHandler}>Leave Room</button>
+
+                <div className='w-[80%] bg-cement'>
+                    <CodeMirror
+                        value={code}
+                        onChange={handleCodeChange}
+                        style={{ color: 'black' }}
+                        extensions={[javascript()]}
+                        theme={tokyoNightStorm}
+                        height="100vh"
+                    />
                 </div>
             </div>
-            <div className='w-[80%] bg-cement'>
-                <TextEditor socketRef={socketRef} />
-            </div>
-        </div>
+        </>
     )
 }
 
