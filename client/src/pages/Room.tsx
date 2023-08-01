@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ConnectedUsers from "../components/ConnectedUsers";
-import TextEditor from "../components/TextEditor";
+// import TextEditor from "../components/TextEditor";
 import { socket } from "../libs/socket";
+import CodeMirror from '@uiw/react-codemirror';
+import { tokyoNightStorm } from '@uiw/codemirror-theme-tokyo-night-storm';
+import { javascript } from '@codemirror/lang-javascript';
 
 interface RoomProps { };
 
@@ -19,46 +22,52 @@ const Room = (props: RoomProps) => {
     const username = location.state.username;
     if (!username) navigate('/');
 
-    const socketRef = useRef<any>(null);
+    // const socketRef = useRef<any>(null);
 
     const [clients, setClients] = useState<Client[]>([]);
+    const [code, setCode] = useState('');
 
     function handleErrors(err: any) {
         console.log(err);
         navigate('/');
     }
+    function handleCodeChange(value: string) {
+        setCode(value);
+        socket.emit('code-change', value);
+    };
 
     useEffect(() => {
-        const enterRoom = async () => {
 
-            socketRef.current = await socket();
-            socketRef.current.on('connect_error', (err: any) => handleErrors(err));
-            socketRef.current.on('connect_failed', (err: any) => handleErrors(err));
+        // socket = await socket();
+        socket.on('connect_error', (err: any) => handleErrors(err));
+        socket.on('connect_failed', (err: any) => handleErrors(err));
 
-            socketRef.current.emit('join-room', { roomId, username });
+        socket.emit('join-room', { roomId, username });
 
-            // listen for someone joining the room
-            socketRef.current.on('room-joined', ({ clients, username: joinedUser, socketId }: any) => {
-                if (joinedUser !== username) {
-                    alert(`${joinedUser} has joined the room`);
-                }
-                setClients(clients);
-            })
+        // listen for someone joining the room
+        socket.on('room-joined', ({ clients, username: joinedUser, socketId }: any) => {
+            if (joinedUser !== username) {
+                alert(`${joinedUser} has joined the room`);
+            }
+            setClients(clients);
+        })
 
-            // listen for someone leaving the room
-            socketRef.current.on('user-disconnected', ({ username, socketId }: any) => {
-                setClients((prevClients) => prevClients.filter((client) => client.socketId !== socketId));
-                alert(`${username} has left the room`);
-            });
-        };
+        // listen for someone leaving the room
+        socket.on('user-disconnected', ({ username, socketId }: any) => {
+            setClients((prevClients) => prevClients.filter((client) => client.socketId !== socketId));
+            alert(`${username} has left the room`);
+        });
 
-        enterRoom();
+        socket.on('code-change', (updatedCode: string) => {
+            setCode(updatedCode);
+        });
+
 
         return () => {
-            socketRef.current.off('user-disconnected');
-            socketRef.current.disconnect();
+            socket.off('user-disconnected');
+            socket.disconnect();
         };
-    }, [socketRef]);
+    }, [roomId]);
 
     const copyHandler = () => {
         navigator.clipboard.writeText(roomId as string);
@@ -66,8 +75,8 @@ const Room = (props: RoomProps) => {
     };
 
     const leaveHandler = () => {
-        socketRef.current.emit('leave-room', { roomId, username });
-        socketRef.current.disconnect();
+        socket.emit('leave-room', { roomId, username });
+        socket.disconnect();
         navigate('/');
     };
 
@@ -95,7 +104,14 @@ const Room = (props: RoomProps) => {
                 </div>
             </div>
             <div className='w-[80%] bg-cement'>
-                <TextEditor socketRef={socketRef} />
+                <CodeMirror
+                    value={code}
+                    onChange={handleCodeChange}
+                    style={{ color: 'black' }}
+                    extensions={[javascript()]}
+                    theme={tokyoNightStorm}
+                    height="100vh"
+                />
             </div>
         </div>
     )
