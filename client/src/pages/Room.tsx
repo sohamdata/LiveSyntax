@@ -29,11 +29,6 @@ const Room = (props: RoomProps) => {
         navigate('/');
     }
 
-    function handleCodeChange(value: string) {
-        setCode(value);
-        socket.emit('code-change', value);
-    };
-
     useEffect(() => {
         socket.on('connect_error', (err: any) => handleErrors(err));
         socket.on('connect_failed', (err: any) => handleErrors(err));
@@ -42,22 +37,23 @@ const Room = (props: RoomProps) => {
         socket.emit('join-room', { roomId, username });
 
         // listen for someone joining the room
-        socket.on('room-joined', ({ clients, username: joinedUser, socketId }: any) => {
+        socket.on('room-joined', ({ clients, username: joinedUser, socketId }: { clients: Client[], username: string, socketId: string }) => {
             if (joinedUser !== username) {
                 alert(`${joinedUser} has joined the room`);
             }
             setClients(clients);
+            // socket.emit("sync-code", { socketId, code });
         })
 
         // listen for someone leaving the room
-        socket.on('user-disconnected', ({ username, socketId }: any) => {
+        socket.on('user-disconnected', ({ username, socketId }: { username: string, socketId: string }) => {
             setClients((prevClients) => prevClients.filter((client) => client.socketId !== socketId));
             alert(`${username} has left the room`);
         });
 
         // listen for code changes
         socket.on('code-change', (updatedCode: string) => {
-            setCode(updatedCode);
+            if (updatedCode !== null) setCode(updatedCode);
         });
 
         return () => {
@@ -68,15 +64,20 @@ const Room = (props: RoomProps) => {
         };
     }, [roomId]);
 
-    const copyHandler = () => {
+    function copyHandler() {
         navigator.clipboard.writeText(roomId as string);
         return;
     };
 
-    const leaveHandler = () => {
+    function leaveHandler() {
         socket.emit('leave-room', { roomId, username });
         socket.disconnect();
         navigate('/');
+    };
+
+    function handleCodeChange(value: string) {
+        setCode(value);
+        socket.emit('code-change', value);
     };
 
     return (
