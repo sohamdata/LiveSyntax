@@ -18,7 +18,7 @@ const JoinRoom = () => {
         setIsGenerated(false);
     };
 
-    const joinHandler = (e: any) => {
+    const joinHandler = (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (!roomId || !username) {
             alert('Please fill in the required fields');

@@ -14,6 +14,12 @@ interface Client {
     socketId: string;
 };
 
+interface SocketParams {
+    socketId: string;
+    clients: Client[];
+    username: string;
+};
+
 const Room = (props: RoomProps) => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -23,23 +29,24 @@ const Room = (props: RoomProps) => {
     if (!username) navigate('/');
 
     const [clients, setClients] = useState<Client[]>([]);
-    const [code, setCode] = useState('');
-    const codeRef = useRef<any>(null);
+    const [code, setCode] = useState<string | undefined>('');
+    const codeRef = useRef<string | null>(null);
 
     function handleErrors(err: any) {
         console.log(err);
         navigate('/');
+        navigate(0);
     }
 
     useEffect(() => {
-        socket.on('connect_error', (err: any) => handleErrors(err));
-        socket.on('connect_failed', (err: any) => handleErrors(err));
+        socket.on('connect_error', (err) => handleErrors(err));
+        socket.on('connect_failed', (err) => handleErrors(err));
 
         // join the room when the component mounts
         socket.emit('join-room', { roomId, username });
 
         // listen for someone joining the room
-        socket.on('room-joined', ({ clients, username: joinedUser, socketId }: { clients: Client[], username: string, socketId: string }) => {
+        socket.on('room-joined', ({ clients, username: joinedUser, socketId }: SocketParams) => {
             if (joinedUser !== username) {
                 alert(`${joinedUser} has joined the room`);
             }
@@ -48,7 +55,7 @@ const Room = (props: RoomProps) => {
         })
 
         // listen for someone leaving the room
-        socket.on('user-disconnected', ({ username, socketId }: { username: string, socketId: string }) => {
+        socket.on('user-disconnected', ({ username, socketId }: SocketParams) => {
             setClients((prevClients) => prevClients.filter((client) => client.socketId !== socketId));
             alert(`${username} has left the room`);
         });
@@ -75,6 +82,7 @@ const Room = (props: RoomProps) => {
         socket.emit('leave-room', { roomId, username });
         socket.disconnect();
         navigate('/');
+        navigate(0);
     };
 
     function handleCodeChange(value: string) {
