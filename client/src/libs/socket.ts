@@ -9,4 +9,6 @@ const OPTIONS = {
 // process.env.REACT_APP_BACKEND_URL
 const SERVER = import.meta.env.VITE_BACKEND_URL;
 
-export const socket = io(SERVER, OPTIONS);
+export const connectSocket = () => {
+    return io(SERVER, OPTIONS);
+};

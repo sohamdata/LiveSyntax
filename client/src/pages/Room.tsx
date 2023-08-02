@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ConnectedUsers from "../components/ConnectedUsers";
-import { socket } from "../libs/socket";
+import { connectSocket } from "../libs/socket";
 import CodeMirror from '@uiw/react-codemirror';
 import { tokyoNightStorm } from '@uiw/codemirror-theme-tokyo-night-storm';
 import { javascript } from '@codemirror/lang-javascript';
@@ -31,6 +31,7 @@ const Room = (props: RoomProps) => {
     const [clients, setClients] = useState<Client[]>([]);
     const [code, setCode] = useState<string | undefined>('');
     const codeRef = useRef<string | null>(null);
+    const socketRef = useRef<any>(null);
 
     function handleErrors(err: any) {
         console.log(err);
@@ -39,8 +40,11 @@ const Room = (props: RoomProps) => {
     }
 
     useEffect(() => {
-        socket.on('connect_error', (err) => handleErrors(err));
-        socket.on('connect_failed', (err) => handleErrors(err));
+        socketRef.current = connectSocket();
+        const socket = socketRef.current;
+
+        socket.on('connect_error', (err: any) => handleErrors(err));
+        socket.on('connect_failed', (err: any) => handleErrors(err));
 
         // join the room when the component mounts
         socket.emit('join-room', { roomId, username });
@@ -71,7 +75,7 @@ const Room = (props: RoomProps) => {
             socket.off('code-change');
             socket.disconnect();
         };
-    }, [roomId]);
+    }, [roomId, socketRef]);
 
     function copyHandler() {
         navigator.clipboard.writeText(roomId as string);
@@ -79,6 +83,8 @@ const Room = (props: RoomProps) => {
     };
 
     function leaveHandler() {
+        const socket = socketRef.current;
+
         socket.emit('leave-room', { roomId, username });
         socket.disconnect();
         navigate('/');
@@ -86,6 +92,8 @@ const Room = (props: RoomProps) => {
     };
 
     function handleCodeChange(value: string) {
+        const socket = socketRef.current;
+
         setCode(value);
         codeRef.current = value;
         socket.emit('code-change', value);
