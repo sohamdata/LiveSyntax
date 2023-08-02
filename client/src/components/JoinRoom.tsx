@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { nanoid } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
+import toast from "react-hot-toast";
 
 const JoinRoom = () => {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ const JoinRoom = () => {
     const joinHandler = (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (!roomId || !username) {
-            alert('Please fill in the required fields');
+            toast.error('Please fill in the required fields');
             return;
         }
 

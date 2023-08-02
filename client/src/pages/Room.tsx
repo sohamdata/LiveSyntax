@@ -6,6 +6,7 @@ import { connectSocket } from "../libs/socket";
 import CodeMirror from '@uiw/react-codemirror';
 import { tokyoNightStorm } from '@uiw/codemirror-theme-tokyo-night-storm';
 import { javascript } from '@codemirror/lang-javascript';
+import toast from 'react-hot-toast';
 
 interface RoomProps { };
 
@@ -34,7 +35,8 @@ const Room = (props: RoomProps) => {
     const socketRef = useRef<any>(null);
 
     function handleErrors(err: any) {
-        console.log(err);
+        toast.error('server error');
+        console.error(err);
         navigate('/');
         navigate(0);
     }
@@ -52,16 +54,17 @@ const Room = (props: RoomProps) => {
         // listen for someone joining the room
         socket.on('room-joined', ({ clients, username: joinedUser, socketId }: SocketParams) => {
             if (joinedUser !== username) {
-                alert(`${joinedUser} has joined the room`);
+                toast.success(`${joinedUser} has joined the room`);
             }
             setClients(clients);
+            toast.success(`You have joined the room`);
             socket.emit("sync-code", { socketId, code: codeRef.current });
         })
 
         // listen for someone leaving the room
         socket.on('user-disconnected', ({ username, socketId }: SocketParams) => {
             setClients((prevClients) => prevClients.filter((client) => client.socketId !== socketId));
-            alert(`${username} has left the room`);
+            toast.error(`${username} has left the room`);
         });
 
         // listen for code changes
@@ -79,6 +82,7 @@ const Room = (props: RoomProps) => {
 
     function copyHandler() {
         navigator.clipboard.writeText(roomId as string);
+        toast.success('Room ID copied to clipboard');
         return;
     };
 
