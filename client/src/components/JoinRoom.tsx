@@ -36,12 +36,13 @@ const JoinRoom = () => {
         <div className='w-[450px] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex justify-center items-center'>
             <div className='rounded-md relative w-full bg-burgundy'>
                 <div className='w-full h-full flex justify-center'>
-                    <form className="space-y-4 px-4 p-4 w-[400px]">
-                        <h1 className="text-center text-2xl text-white font-medium">LiveSyntax</h1>
+                    <form className="space-y-5 p-4 w-[400px]">
+                        <h1 className="text-center text-3xl text-white font-semibold"> LiveSyntax</h1>
+                        <div className="border-b-2 border-green-500" />
                         <div>
                             <label htmlFor="roomid" className="my-2 block text-white">Room ID</label>
                             <input type="roomid" id="roomid" placeholder="paste room id here"
-                                className={`p-1.5 rounded-md outline-none w-full text-black text-sm placeholder-gray-400 ${isGenerated && 'font-bold'}`}
+                                className={`p-2 rounded-md outline-none w-full text-black text-sm placeholder-gray-400 ${isGenerated && 'font-bold'}`}
                                 value={roomId}
                                 {...isGenerated && { readOnly: true }}
                                 onChange={(e) => setRoomId(e.target.value)}
@@ -50,7 +51,7 @@ const JoinRoom = () => {
                         <div>
                             <label htmlFor="username" className="my-2 block text-white">Username</label>
                             <input type="username" id="username" placeholder="something cool"
-                                className="mb-4 p-1.5 rounded-md outline-none w-full text-black text-sm"
+                                className="p-2 rounded-md outline-none w-full text-black text-sm"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />
