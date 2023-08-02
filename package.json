@@ -1,0 +1,25 @@
+{
+  "name": "livesyntax",
+  "version": "1.0.0",
+  "description": "A Code Editor that allows multiple users to edit the same code in real-time.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sohamdata/LiveSyntax.git"
+  },
+  "keywords": [],
+  "author": "Soham Datta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sohamdata/LiveSyntax/issues"
+  },
+  "homepage": "https://github.com/sohamdata/LiveSyntax#readme",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
