@@ -22,6 +22,10 @@ function getRoomClients(roomId) {
     });
 };
 
+app.get('/wakeup', (req, res) => {
+    res.json({ message: "too long have i've been dormant" });
+});
+
 io.on('connection', (socket) => {
     console.log('a user CONNECTED with socketId', socket.id);
 

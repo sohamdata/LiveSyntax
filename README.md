@@ -1,7 +1,7 @@
 # LiveSyntax
 https://livesyntax.vercel.app/
 
-> NOTE: if you get server error when joining a room on the live website above , visit https://glitch.com/edit/#!/livesyntax-server and refresh the page to wake up the server (`glitch.com` puts the server to sleep after 30 minutes of inactivity)
+> NOTE: if you get server error when joining a room on the live website above , visit https://livesyntax-server.glitch.me/wakeup and refresh the page to wake up the server (`glitch.com` puts the server to sleep after just 5 minutes of inactivity)
 
 A code editor that allows multiple users to edit the same code in real-time.
 
