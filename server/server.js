@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
         socket.to(roomId).emit('user-disconnected', { username, socketId: socket.id });
         delete userSocketMap[socket.id];
         socket.leave(roomId);
-        console.log('a user LEFT with socketId', socket.id);
+        // console.log('a user LEFT with socketId', socket.id);
     });
 
     socket.on('disconnecting', () => {
@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
         });
         delete userSocketMap[socket.id];
         socket.leave();
-        console.log('a user DISCONNECTED with socketId', socket.id);
+        // console.log('a user DISCONNECTED with socketId', socket.id);
     });
 
     socket.on('code-change', (updatedCode) => {
