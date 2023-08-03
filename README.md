@@ -1,8 +1,11 @@
 # LiveSyntax
+https://livesyntax.vercel.app/
+
+> NOTE: if you get server error when joining a room on the live website above , visit https://glitch.com/edit/#!/livesyntax-server and refresh the page to wake up the server (`glitch.com` puts the server to sleep after 30 minutes of inactivity)
 
 A code editor that allows multiple users to edit the same code in real-time.
 
-## Setup local development environment:
+## Setup locally:
 - requirements:  nodejs and npm
 - clone this repo
 - cd into the root directory
@@ -12,7 +15,7 @@ npm install
 npm run install:all
 ```
 
-- rename the .env.example file in the client directory to .env then edit it to your liking
+- rename the `.env.example` file in the client directory to `.env` then edit it to your liking (see `client/src/libs/socket.ts`)
 
 Run this command in the root directory
 ```bash
@@ -33,7 +36,11 @@ cd client
 npm run dev
 ```
 
-```
-𝕏 𝕩 𝕩 𝕩 𝕩 𝕏 𝕩 𝕩 𝕩 𝕩 𝕏
-          𝕩
-```
+Tech used:
+- React (with typescript)
+- Tailwindcss
+- CodeMirror
+- Vite
+- Nodejs (express)
+- Socket.io
+- [Glitch.com](https://glitch.com/) (for hosting the server)
