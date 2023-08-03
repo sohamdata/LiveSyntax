@@ -17,7 +17,7 @@ npm run install:all
 
 - rename the `.env.example` file in the client directory to `.env` then edit it to your liking (see `client/src/libs/socket.ts`)
 
-Run this command in the root directory
+To start the server and client at the same time, run the following command from the root directory:
 ```bash
 npm run dev
 ```
@@ -35,6 +35,7 @@ start client:
 cd client
 npm run dev
 ```
+> for yarn / pnpm users, edit the scripts in `package.json` files
 
 Tech used:
 - React (with typescript)
