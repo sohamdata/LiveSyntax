@@ -1,14 +1,17 @@
 # LiveSyntax
 
+A code editor that allows multiple users to edit the same code in real-time.
+
 ## Setup local development environment:
 - requirements:  nodejs and npm
 - clone this repo
 - cd into the root directory
-- install dependencies (first time only) :
+- install dependencies (this will install dependencies for both the client and server)
 ```bash
-linux/macOS : npm install && cd client && npm install && cd ../server && npm install
-windows : npm install; cd client; npm install; cd ../server; npm install
+npm install
+npm run install:all
 ```
+
 - rename the .env.example file in the client directory to .env then edit it to your liking
 
 Run this command in the root directory
