@@ -1,3 +1,12 @@
+/* 
+
+https://glitch.com/edit/#!/livesyntax-server
+
+TO WAKE UP THE SERVER curl or goto
+https://livesyntax-server.glitch.me/wakeup
+
+*/
+
 const express = require('express');
 const app = express();
 const http = require('http');
