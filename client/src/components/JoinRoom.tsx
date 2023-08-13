@@ -100,7 +100,7 @@ const JoinRoom = () => {
                 <button
                     onClick={() => setIsServerExpanded(!isServerExpanded)}
                     className='w-[300px] py-2 text-white bg-slate-900 rounded-md hover:bg-indigo-900 transition duration-300 outline-none'
-                > more
+                > {isServerExpanded ? 'collapse' : 'more'}
                 </button>
                 {isServerExpanded && (
                     <div>
