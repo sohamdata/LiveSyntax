@@ -122,14 +122,13 @@ const Room = (props: RoomProps) => {
                     </div>
                     <div className='p-5'>
                         <div className='text-lg font-medium'>Connected Users:</div>
-                        <div className='mt-2 flex flex-col space-y-2 overflow-y-auto max-h-72 bg-gray-800 rounded-md p-4'>
-                            <div>
-                                {clients.map((client) => (
-                                    <ConnectedUsers key={client.socketId} client={client} />
-                                ))}
-                            </div>
+                        <div className='mt-2 p-4 rounded-md grid grid-cols-2 gap-2 overflow-y-auto max-h-72 bg-gray-800 '>
+                            {clients.map((client) => (
+                                <ConnectedUsers key={client.socketId} client={client} />
+                            ))}
                         </div>
                     </div>
+
                     <div className='flex-grow'></div>
                     <div className='p-5 flex flex-col space-y-2'>
                         <button className='p-2 rounded-md bg-green-500 hover:bg-green-600 transition duration-300' onClick={copyHandler}>Copy Room ID</button>
