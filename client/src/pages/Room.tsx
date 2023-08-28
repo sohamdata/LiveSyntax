@@ -111,27 +111,32 @@ const Room = (props: RoomProps) => {
                 <meta name="description" content="LiveSyntax Room" />
             </Helmet>
             <div className='flex h-screen'>
-                <div className='flex flex-col justify-between w-[20%] bg-burgundy'>
-                    <div className='flex flex-col items-center'>
-                        <div className='mb-5 p-5 w-full text-white text-center text-2xl font-medium'>LiveSyntax</div>
-                        <div>
-                            <div className='text-white text-center text-lg font-medium'>Room ID: <pre>{roomId}</pre></div>
-                            <div className='text-white text-center text-lg font-medium'>username: {username}</div>
-                        </div>
-                        <div className='mt-4'>
-                            <div className='text-white text-center text-lg font-medium'>Connected Users</div>
-                            <div className='mt-2 flex flex-col space-y-2'>
+                <div className='flex flex-col w-[20%] bg-gray-900 text-white text-center'>
+                    <div className='p-5 text-center text-2xl font-medium bg-gradient-to-b from-burgundy to-gray-900'>LiveSyntax</div>
+                    <div className='p-5'>
+                        <div className='text-lg font-medium'>Room ID:</div>
+                        <pre className='mt-2 bg-gray-800 p-2 rounded-md text-white'>{roomId}</pre>
+                    </div>
+                    <div className='p-5'>
+                        <div className='text-lg font-medium'>Username: {username}</div>
+                    </div>
+                    <div className='p-5'>
+                        <div className='text-lg font-medium'>Connected Users:</div>
+                        <div className='mt-2 flex flex-col space-y-2 overflow-y-auto max-h-72 bg-gray-800 rounded-md p-4'>
+                            <div>
                                 {clients.map((client) => (
                                     <ConnectedUsers key={client.socketId} client={client} />
                                 ))}
                             </div>
                         </div>
                     </div>
-                    <div className='p-2 mb-5 flex flex-col items-center justify-center gap-2'>
-                        <button className='p-2 w-full rounded-sm bg-green-500 hover:bg-green-600 transition duration-300' onClick={copyHandler}>Copy Room ID</button>
-                        <button className='p-2 w-full rounded-sm bg-red-500 hover:bg-red-700 transition duration-300' onClick={leaveHandler}>Leave Room</button>
+                    <div className='flex-grow'></div>
+                    <div className='p-5 flex flex-col space-y-2'>
+                        <button className='p-2 rounded-md bg-green-500 hover:bg-green-600 transition duration-300' onClick={copyHandler}>Copy Room ID</button>
+                        <button className='p-2 rounded-md bg-red-500 hover:bg-red-700 transition duration-300' onClick={leaveHandler}>Leave Room</button>
                     </div>
                 </div>
+
 
                 <div className='w-[80%] bg-cement'>
                     <CodeMirror

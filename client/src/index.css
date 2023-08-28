@@ -2,6 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #4d4a4a;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #6b2232;
+}
+
+/* Set up the scrollbar styles for Firefox */
+.scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #4A4A4D #6b2232;
+}
+
+.scrollbar-thumb {
+    background-color: #4A4A4D;
+    border-radius: 4px;
+}
+
+.scrollbar-thumb:hover {
+    background-color: #555559;
+}
+
 body {
     background-color: #1a1a1d;
 }
